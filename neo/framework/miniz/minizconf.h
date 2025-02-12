@@ -61,7 +61,8 @@
       #define z_off64_t int64_t
     #endif
   #else
-    #define z_off64_t z_off_t
+    #include <stdint.h>
+    #define z_off64_t int64_t
   #endif
 #endif
 
