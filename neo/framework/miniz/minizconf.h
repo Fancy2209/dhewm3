@@ -35,7 +35,7 @@
 #define COMMON_UNZIP_MINIZCONF_H
 
 #ifndef z_off_t
-  #if defined(__unix__) || defined(__unix) || (defined(__APPLE__) && defined(__MACH__))
+  #if defined(__unix__) || defined(__unix) || (defined(__APPLE__) && defined(__MACH__)) || defined(__wii__)
     #include <unistd.h>
     #define z_off_t off_t
   #elif defined(off_t) // maybe we're lucky :-p
@@ -50,7 +50,10 @@
 #endif
 
 // FIXME: why not just set this to int64_t?
-#if !defined(_WIN32) && defined(__USE_LARGEFILE64)
+#ifdef __wii__
+  #include <stdint.h>
+  #define z_off64_t int64_t
+#elif !defined(_WIN32) && defined(__USE_LARGEFILE64)
   #define z_off64_t off64_t
 #else
   #if defined(_WIN32)

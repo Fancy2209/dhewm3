@@ -63,6 +63,12 @@ option(REPRODUCIBLE_BUILD "Replace __DATE__ and __TIME__ by hardcoded values for
 
 option(HARDLINK_GAME "Compile gamecode into executable (no game DLLs)" OFF)
 
+if(CMAKE_SYSTEM_NAME MATCHES "NintendoWii")
+set(ONATIVE ON)
+set(HARDLINK_GAME ON)
+include_directories(libs/include $ENV{DEVKITPRO}/portlibs/wii/include)
+endif()
+
 if(NOT MSVC) # GCC/clang or compatible, hopefully
 	option(FORCE_COLORED_OUTPUT "Always produce ANSI-colored compiler warnings/errors (GCC/Clang only; esp. useful with ninja)." OFF)
 	option(ASAN		"Enable GCC/Clang Adress Sanitizer (ASan)" OFF) # TODO: MSVC might also support this, somehow?
@@ -192,8 +198,10 @@ if(CMAKE_MAJOR_VERSION LESS 3 OR ( CMAKE_MAJOR_VERSION EQUAL 3 AND CMAKE_MINOR_V
 endif()
 
 # libs
+if(NOT CMAKE_SYSTEM_NAME MATCHES "NintendoWii")
 find_package(OpenAL REQUIRED)
 include_directories(${OPENAL_INCLUDE_DIR})
+endif()
 
 if (SDL3)
 	if(SDL2)
@@ -1020,7 +1028,6 @@ set(src_core
 set(src_stub_openal		sys/stub/openal_stub.cpp)
 set(src_stub_gl			sys/stub/stub_gl.cpp)
 
-
 set(src_tools
 	tools/guied/GEWindowWrapper_stub.cpp
 )
@@ -1201,7 +1208,20 @@ elseif(WIN32)
 		# and doom.rc also contains that (+icons for editor etc, AFAIK), so this is fine
 		set(src_sys_core ${src_sys_core} "${CMAKE_SOURCE_DIR}/sys/win32/rc/dhewm3.rc" )
 	endif()
+elseif(CMAKE_SYSTEM_NAME MATCHES "NintendoWii")
+	set(src_sys_base
+		sys/cpu.cpp
+		sys/threads.cpp
+		sys/events.cpp
+		sys/sys_local.cpp
+		sys/rvl/rvl_net.cpp
+		sys/rvl/rvl_main.cpp
+		sys/rvl/main.cpp
+	)
 
+	set(src_sys_core
+		sys/glimp.cpp
+	)
 else()
 	set(src_sys_base
 		sys/cpu.cpp
@@ -1255,13 +1275,24 @@ if(HARDLINK_GAME)
 endif()# HARDLINK_GAME
 
 if(CORE)
-	add_executable(${DHEWM3BINARY} WIN32 MACOSX_BUNDLE
-		${src_core}
-		${src_sys_base}
-		${src_sys_core}
-		${src_imgui}
-		${src_editor_tools}
-	)
+	if(CMAKE_SYSTEM_NAME MATCHES "NintendoWii")
+		add_executable(${DHEWM3BINARY} WIN32 MACOSX_BUNDLE
+			${src_core}
+			${src_stub_openal}
+			${src_sys_base}
+			${src_sys_core}
+			${src_imgui}
+			${src_editor_tools}
+		)
+	else()
+		add_executable(${DHEWM3BINARY} WIN32 MACOSX_BUNDLE
+			${src_core}
+			${src_sys_base}
+			${src_sys_core}
+			${src_imgui}
+			${src_editor_tools}
+		)
+	endif()
 	
 	if(MSVC AND CMAKE_MAJOR_VERSION GREATER 3 OR ( CMAKE_MAJOR_VERSION EQUAL 3 AND CMAKE_MINOR_VERSION GREATER_EQUAL 6 ))
 		# CMake >= 3.6 supports setting the default project started for debugging (instead of trying to launch ALL_BUILD ...)
@@ -1283,9 +1314,10 @@ endif()
 
 	target_link_libraries(${DHEWM3BINARY}
 		idlib
+		wiisocket
+		SDL2::SDL2
 		${OPENAL_LIBRARY}
 		${CURL_LIBRARY}
-		${SDLx_LIBRARY}
 		${sys_libs}
 	)
 

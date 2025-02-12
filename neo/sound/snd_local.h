@@ -41,7 +41,9 @@ If you have questions concerning this license or the applicable additional terms
 
 #include <AL/al.h>
 #include <AL/alc.h>
+#ifndef D3_MOJOAL
 #include <AL/alext.h>
+#endif
 
 // DG: make this code build with older OpenAL headers that don't know about ALC_SOFT_HRTF
 //     which provides LPALCRESETDEVICESOFT for idSoundSystemLocal::alcResetDeviceSOFT()

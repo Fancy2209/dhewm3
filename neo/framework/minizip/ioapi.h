@@ -27,7 +27,11 @@
 #define OF(x) x
 #endif
 
-#if (!defined(_WIN32)) && (!defined(WIN32)) && (!defined(__APPLE__))
+#ifdef __wii__
+#define MINIZIP_FOPEN_NO_64
+#endif
+
+#if (!defined(_WIN32)) && (!defined(WIN32)) && (!defined(__APPLE__)) && (!defined(__wii__))
 
   // Linux needs this to support file operation on files larger then 4+GB
   // But might need better if/def to select just the platforms that needs them.
