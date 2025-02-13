@@ -222,7 +222,11 @@ elseif (SDL2)
 	endif()
 	find_package(SDL2 REQUIRED)
 	include_directories(${SDL2_INCLUDE_DIR})
-	set(SDLx_LIBRARY ${SDL2_LIBRARY})
+	if(NOT CMAKE_SYSTEM_NAME MATCHES "NintendoWii")
+		set(SDLx_LIBRARY ${SDL2_LIBRARY})
+	else()
+		set(SDLx_LIBRARY SDL2::SDL2 SDL2::SDL2main)
+	endif()
 else()
 	# skip SDLmain
 	if(APPLE OR WIN32)
@@ -1208,20 +1212,6 @@ elseif(WIN32)
 		# and doom.rc also contains that (+icons for editor etc, AFAIK), so this is fine
 		set(src_sys_core ${src_sys_core} "${CMAKE_SOURCE_DIR}/sys/win32/rc/dhewm3.rc" )
 	endif()
-elseif(CMAKE_SYSTEM_NAME MATCHES "NintendoWii")
-	set(src_sys_base
-		sys/cpu.cpp
-		sys/threads.cpp
-		sys/events.cpp
-		sys/sys_local.cpp
-		sys/rvl/rvl_net.cpp
-		sys/rvl/rvl_main.cpp
-		sys/rvl/main.cpp
-	)
-
-	set(src_sys_core
-		sys/glimp.cpp
-	)
 else()
 	set(src_sys_base
 		sys/cpu.cpp
@@ -1315,7 +1305,7 @@ endif()
 	target_link_libraries(${DHEWM3BINARY}
 		idlib
 		wiisocket
-		SDL2::SDL2
+		${SDLx_LIBRARY}
 		${OPENAL_LIBRARY}
 		${CURL_LIBRARY}
 		${sys_libs}
