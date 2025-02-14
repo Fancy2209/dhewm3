@@ -29,7 +29,7 @@ If you have questions concerning this license or the applicable additional terms
 */
 
 #include <gccore.h>
-#include <system.h>
+#include <ogc/system.h>
 #include <network.h>
 #include <errno.h>
 #include <unistd.h>
