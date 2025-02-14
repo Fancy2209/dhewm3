@@ -52,6 +52,7 @@ If you have questions concerning this license or the applicable additional terms
 #define select net_select
 #define setsockopt net_setsockopt
 #define getsockname net_getsockname
+#define ioctl net_ioctl
 #define fcntl net_fcntl
 #define close net_close
 #define write net_write
