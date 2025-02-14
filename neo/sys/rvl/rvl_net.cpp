@@ -60,6 +60,9 @@ If you have questions concerning this license or the applicable additional terms
 #define getsockname net_getsockname
 #define ioctl net_ioctl
 #define fcntl net_fcntl
+
+#define INADDR_LOOPBACK  0x7f000001
+
 idPort clientPort, serverPort;
 
 idCVar net_ip( "net_ip", "localhost", CVAR_SYSTEM, "local IP address" );
