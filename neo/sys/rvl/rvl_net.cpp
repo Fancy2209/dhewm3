@@ -615,15 +615,10 @@ int idTCP::Read(void *data, int size) {
 		return -1;
 	}
 
-	#if defined(_GNU_SOURCE) && defined(TEMP_FAILURE_RETRY)
-	// handle EINTR interrupted system call with TEMP_FAILURE_RETRY -  this is probably GNU libc specific
-	if ( ( nbytes = TEMP_FAILURE_RETRY( read( fd, data, size ) ) ) == -1 ) {
-#else
 	do {
 	  nbytes = read( fd, data, size );
 	} while ( nbytes == -1 && errno == EINTR );
 	if ( nbytes == -1 ) {
-#endif
 		if (errno == EAGAIN) {
 			return 0;
 		}
