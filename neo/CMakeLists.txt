@@ -1212,6 +1212,20 @@ elseif(WIN32)
 		# and doom.rc also contains that (+icons for editor etc, AFAIK), so this is fine
 		set(src_sys_core ${src_sys_core} "${CMAKE_SOURCE_DIR}/sys/win32/rc/dhewm3.rc" )
 	endif()
+elseif(CMAKE_SYSTEM_NAME MATCHES "NintendoWii")
+	set(src_sys_base
+		sys/cpu.cpp
+		sys/threads.cpp
+		sys/events.cpp
+		sys/sys_local.cpp
+		sys/rvl/rvl_net.cpp
+		sys/rvl/rvl_main.cpp
+		sys/rvl/main.cpp
+	)
+
+	set(src_sys_core
+		sys/glimp.cpp
+	)
 else()
 	set(src_sys_base
 		sys/cpu.cpp
