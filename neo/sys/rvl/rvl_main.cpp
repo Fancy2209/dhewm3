@@ -41,7 +41,7 @@ If you have questions concerning this license or the applicable additional terms
 #include "framework/EditField.h"
 #include "sys/sys_local.h"
 
-#include "sys/nx/RVL_public.h"
+#include "sys/rvl/rvl_public.h"
 
 #define					COMMAND_HISTORY 64
 
