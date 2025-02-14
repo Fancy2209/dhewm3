@@ -84,10 +84,7 @@ returns in megabytes
 ================
 */
 int Sys_GetSystemRam( void ) {
-	u32 mem = SYSMEM1_SIZE + SYSMEM2_SIZE;
-	int mb = mem / (1024 * 1024)
-	
-	return mb;
+	return 88;
 }
 
 /*
