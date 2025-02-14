@@ -44,23 +44,15 @@ If you have questions concerning this license or the applicable additional terms
 #define send net_send
 #define sendto net_sendto
 #define gethostbyname net_gethostbyname
-#define gethostip net_gethostip
 #define recv net_recv
 #define recvfrom net_recvfrom
 #define bind net_bind
-#define listen net_listen
 #define socket net_socket
 #define connect net_connect
-#define accept net_accept
-#define shutdown net_shutdown
 #define select net_select
-#define poll net_poll
-#define getsockopt net_getsockopt
 #define setsockopt net_setsockopt
 #define getsockname net_getsockname
-#define ioctl net_ioctl
 #define fcntl net_fcntl
-#define connect net_ioctl
 #define close net_close
 #define write net_write
 
@@ -570,7 +562,7 @@ bool idTCP::Init( const char *host, short port ) {
 		return false;
 	}
 
-	if ( connect( fd, (sockaddr *)&sadr, sizeof( sadr ) ) == -1 ) {
+	if ( connect( fd, (struct sockaddr *)&sadr, sizeof( sadr ) ) == -1 ) {
 		common->Printf( "ERROR: idTCP::Init: connect: %s\n", strerror( errno ) );
 		close( fd );
 		fd = 0;
