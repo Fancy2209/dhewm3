@@ -1318,10 +1318,9 @@ endif()
 
 	target_link_libraries(${DHEWM3BINARY}
 		idlib
-		wiisocket
-		${SDLx_LIBRARY}
 		${OPENAL_LIBRARY}
 		${CURL_LIBRARY}
+		${SDLx_LIBRARY}
 		${sys_libs}
 	)
 
