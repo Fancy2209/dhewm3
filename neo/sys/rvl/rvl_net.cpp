@@ -29,7 +29,6 @@ If you have questions concerning this license or the applicable additional terms
 #include <unistd.h>
 #include <fcntl.h>
 #include <time.h>
-#include <netdb.h>
 #include <errno.h>
 #include <network.h>
 #include <gccore.h>
@@ -284,7 +283,7 @@ NET_InitNetworking
 */
 void Sys_InitNetworking(void)
 {
-	if_config();
+	if_config(NULL, NULL, NULL, true, 20);
 	net_init();
 	unsigned int ip, mask;
 	struct ifaddrs *ifap, *ifp;
