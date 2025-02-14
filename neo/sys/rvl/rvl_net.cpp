@@ -60,9 +60,6 @@ If you have questions concerning this license or the applicable additional terms
 #define getsockname net_getsockname
 #define ioctl net_ioctl
 #define fcntl net_fcntl
-
-#define INADDR_LOOPBACK  0x7f000001
-
 idPort clientPort, serverPort;
 
 idCVar net_ip( "net_ip", "localhost", CVAR_SYSTEM, "local IP address" );
@@ -286,52 +283,10 @@ NET_InitNetworking
 */
 void Sys_InitNetworking(void)
 {
-	unsigned int ip, mask;
-	struct ifaddrs *ifap, *ifp;
-
-	num_interfaces = 0;
-
-	if( getifaddrs( &ifap ) < 0 ) {
-		common->FatalError( "InitNetworking: SIOCGIFCONF error - %s\n", strerror( errno ) );
-		return;
-	}
-
-	for( ifp = ifap; ifp; ifp = ifp->ifa_next ) {
-		if ( !ifp->ifa_addr )
-			continue;
-
-		if ( ifp->ifa_addr->sa_family != AF_INET )
-			continue;
-
-		if ( !( ifp->ifa_flags & IFF_UP ) )
-			continue;
-
-		if ( !ifp->ifa_netmask )
-			continue;
-
-		common->Printf( "found interface %s - ", ifp->ifa_name);
-
-		ip = ntohl( *( unsigned int *)&ifp->ifa_addr->sa_data[2] );
-		mask = ntohl( *( unsigned int *)&ifp->ifa_netmask->sa_data[2] );
-
-		if ( ip == INADDR_LOOPBACK ) {
-			common->Printf( "loopback\n" );
-		} else {
-			common->Printf( "%u.%u.%u.%u/%u.%u.%u.%u\n",
-							(ip >> 24) & 0xff, (ip >> 16) & 0xff,
-							(ip >> 8) & 0xff, ip & 0xff,
-							(mask >> 24) & 0xff, (mask >> 16) & 0xff,
-							(mask >> 8) & 0xff, mask & 0xff );
-		}
-
-		netint[ num_interfaces ].ip = ip;
-		netint[ num_interfaces ].mask = mask;
-		num_interfaces++;
-
-		if (num_interfaces >= MAX_INTERFACES)
-			break;
-	}
-	freeifaddrs(ifap);
+	num_interfaces = 1;
+	common->Printf( "Sys_InitNetworking: adding loopback interface\n" );
+	netint[0].ip = ntohl( inet_addr( "127.0.0.1" ) );
+	netint[0].mask = ntohl( inet_addr( "255.0.0.0" ) );
 }
 
 /*
@@ -657,7 +612,7 @@ int idTCP::Read(void *data, int size) {
 		return -1;
 	}
 
-#if defined(_GNU_SOURCE) && defined(TEMP_FAILURE_RETRY)
+	#if defined(_GNU_SOURCE) && defined(TEMP_FAILURE_RETRY)
 	// handle EINTR interrupted system call with TEMP_FAILURE_RETRY -  this is probably GNU libc specific
 	if ( ( nbytes = TEMP_FAILURE_RETRY( read( fd, data, size ) ) ) == -1 ) {
 #else
@@ -701,20 +656,7 @@ int	idTCP::Write(void *data, int size) {
 		return -1;
 	}
 
-	struct sigaction bak_action;
-	struct sigaction action;
-
-	action.sa_handler = got_SIGPIPE;
-	sigemptyset( &action.sa_mask );
-	action.sa_flags = 0;
-
-	if ( sigaction( SIGPIPE, &action, &bak_action ) != 0 ) {
-		common->Printf( "ERROR: idTCP::Write: failed to set temporary SIGPIPE handler\n" );
-		Close();
-		return -1;
-	}
-
-#if defined(_GNU_SOURCE) && defined(TEMP_FAILURE_RETRY)
+#if defined(_GNU_SOURCE)
 	// handle EINTR interrupted system call with TEMP_FAILURE_RETRY -  this is probably GNU libc specific
 	if ( ( nbytes = TEMP_FAILURE_RETRY ( write( fd, data, size ) ) ) == -1 ) {
 #else
@@ -724,12 +666,6 @@ int	idTCP::Write(void *data, int size) {
 	  if ( nbytes == -1 ) {
 #endif
 		common->Printf( "ERROR: idTCP::Write: %s\n", strerror( errno ) );
-		Close();
-		return -1;
-	}
-
-	if ( sigaction( SIGPIPE, &bak_action, NULL ) != 0 ) {
-		common->Printf( "ERROR: idTCP::Write: failed to reset SIGPIPE handler\n" );
 		Close();
 		return -1;
 	}
