@@ -130,6 +130,8 @@ main
 ===============
 */
 int main(int argc, char **argv) {
+	if_config(NULL, NULL, NULL, true, 20);
+	net_init();
     chdir("/apps/dhewm3");
 	strncpy( path_argv, "/apps/dhewm3", MAX_OSPATH );
 

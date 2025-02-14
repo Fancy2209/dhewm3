@@ -283,8 +283,6 @@ NET_InitNetworking
 */
 void Sys_InitNetworking(void)
 {
-	if_config(NULL, NULL, NULL, true, 20);
-	net_init();
 	unsigned int ip, mask;
 	struct ifaddrs *ifap, *ifp;
 

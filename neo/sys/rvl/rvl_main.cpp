@@ -75,7 +75,7 @@ RVL_Exit
 ================
 */
 void RVL_Exit(int ret) {
-	socketExit();
+	net_deinit();
 	// in case of signal, handler tries a common->Quit
 	// we use set_exit to maintain a correct exit code
 	if ( set_exit ) {
@@ -236,7 +236,6 @@ void RVL_Shutdown( void ) {
 	for ( int i = 0; i < COMMAND_HISTORY; i++ ) {
 		history[ i ].Clear();
 	}
-	// socketExit();
 }
 
 /*
