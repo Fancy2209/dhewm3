@@ -42,27 +42,22 @@ If you have questions concerning this license or the applicable additional terms
 #include "sys/posix/posix_public.h"
 
 
-u32 net_gethostip(void);
-s32 net_socket(u32 domain,u32 type,u32 protocol);
-s32 net_bind(s32 s,struct sockaddr *name,socklen_t namelen);
-s32 net_listen(s32 s,u32 backlog);
-s32 net_accept(s32 s,struct sockaddr *addr,socklen_t *addrlen);
-s32 net_connect
-s32 net_write
-s32 net_send
-s32 net_sendto
-s32 net_recv
-s32 net_recvfrom
-s32 net_read
-s32 net_close
-s32 net_select
-s32 net_getsockopt
-s32 net_setsockopt
-s32 net_getsockname
-s32 net_ioctl
-s32 net_fcntl
-s32 net_poll
-s32 net_shutdown
+#define gethostip net_gethostip
+#define socket net_socket
+#define bind net_bind
+#define listen net_listen
+#define accept net_accept
+#define connect net_connect
+#define sendto net_sendto
+#define recv net_recv
+#define recvfrom net_recvfrom
+#define select net_select
+#define getsockopt net_getsockopt
+#define setsockopt net_setsockopt
+#define getsockname net_getsockname
+#define ioctl net_ioctl
+#define fcntl net_fcntl
+#define poll net_poll
 
 idPort clientPort, serverPort;
 
