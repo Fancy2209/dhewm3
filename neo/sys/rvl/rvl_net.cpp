@@ -60,6 +60,9 @@ If you have questions concerning this license or the applicable additional terms
 #define getsockname net_getsockname
 #define ioctl net_ioctl
 #define fcntl net_fcntl
+#define connect net_ioctl
+#define close net_close
+#define write net_write
 
 #define INADDR_LOOPBACK  0x7f000001
 
@@ -654,15 +657,10 @@ int	idTCP::Write(void *data, int size) {
 		return -1;
 	}
 
-#if defined(_GNU_SOURCE)
-	// handle EINTR interrupted system call with TEMP_FAILURE_RETRY -  this is probably GNU libc specific
-	if ( ( nbytes = TEMP_FAILURE_RETRY ( write( fd, data, size ) ) ) == -1 ) {
-#else
 	  do {
 		nbytes = write( fd, data, size );
 	  } while ( nbytes == -1 && errno == EINTR );
 	  if ( nbytes == -1 ) {
-#endif
 		common->Printf( "ERROR: idTCP::Write: %s\n", strerror( errno ) );
 		Close();
 		return -1;
