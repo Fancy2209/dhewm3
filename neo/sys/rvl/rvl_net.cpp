@@ -567,7 +567,7 @@ bool idTCP::Init( const char *host, short port ) {
 		return false;
 	}
 
-	if ( connect( fd, (const sockaddr *)&sadr, sizeof( sadr ) ) == -1 ) {
+	if ( connect( fd, (sockaddr *)&sadr, sizeof( sadr ) ) == -1 ) {
 		common->Printf( "ERROR: idTCP::Init: connect: %s\n", strerror( errno ) );
 		close( fd );
 		fd = 0;
