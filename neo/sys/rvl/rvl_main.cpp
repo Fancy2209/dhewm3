@@ -75,7 +75,6 @@ RVL_Exit
 ================
 */
 void RVL_Exit(int ret) {
-	net_deinit();
 	// in case of signal, handler tries a common->Quit
 	// we use set_exit to maintain a correct exit code
 	if ( set_exit ) {
