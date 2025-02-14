@@ -32,6 +32,7 @@ If you have questions concerning this license or the applicable additional terms
 #include <errno.h>
 #include <network.h>
 #include <gccore.h>
+#include <climits.h>
 
 #include "sys/platform.h"
 #include "framework/Common.h"
