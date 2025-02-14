@@ -28,6 +28,8 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
+#include <gccore.h>
+#include <system.h>
 #include <network.h>
 #include <errno.h>
 #include <unistd.h>
@@ -82,18 +84,12 @@ returns in megabytes
 ================
 */
 int Sys_GetSystemRam( void ) {
-	// use a syscall to get available memory
-	u64 avail = 0;
+	u32 mem;
+	int mb;
 
-	// id0 = 6, id1 = 0 => TotalMemoryAvailable
-	Result rc = svcGetInfo( &avail, 6, CUR_PROCESS_HANDLE, 0 );
-
-	// applets get at least like 300 mb
-	if ( R_FAILED(rc) ) avail = 304 * 1024 * 1024;
-
-	int mb = (int)( avail / ( 1024 * 1024 ) );
-	// round to the nearest 16Mb
-	mb = ( mb + 8 ) & ~15;
+	u32 mem = SYSMEM1_SIZE + SYSMEM2_SIZE;
+	int mb = mem / (1024 * 1024)
+	
 	return mb;
 }
 
