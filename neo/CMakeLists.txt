@@ -66,6 +66,7 @@ option(HARDLINK_GAME "Compile gamecode into executable (no game DLLs)" OFF)
 if(CMAKE_SYSTEM_NAME MATCHES "NintendoWii")
 set(ONATIVE ON)
 set(HARDLINK_GAME ON)
+set(IMGUI OFF)
 include_directories(libs/include $ENV{DEVKITPRO}/portlibs/wii/include)
 endif()
 
