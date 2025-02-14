@@ -138,7 +138,7 @@ int main(int argc, char **argv) {
 		common->Init( 0, NULL );
 	}
 
-	while ( appletMainLoop() ) {
+	while ( 1 ) {
 		common->Frame();
 	}
 	return 0;
